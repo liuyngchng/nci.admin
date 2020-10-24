@@ -10,6 +10,30 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
+	<repositories>
+    	<repository>
+        	<id>aliyun</id>
+        	<url>https://maven.aliyun.com/repository/public</url>
+        	<releases>
+            	<enabled>true</enabled>
+        	</releases>
+        	<snapshots>
+            	<enabled>false</enabled>
+        	</snapshots>
+    	</repository>
+	</repositories>
+	<pluginRepositories>
+    	<pluginRepository>
+        	<id>aliyun-plugin</id>
+        	<url>https://maven.aliyun.com/repository/public</url>
+        	<releases>
+            	<enabled>true</enabled>
+        	</releases>
+        	<snapshots>
+            	<enabled>false</enabled>
+        	</snapshots>
+    	</pluginRepository>
+	</pluginRepositories>
     <properties>
         <maven.test.skip>true</maven.test.skip>
         <apollo_client>1.0-SNAPSHOT</apollo_client>
