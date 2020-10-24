@@ -1,0 +1,50 @@
+<div class="ibox float-e-margins backstage-right-div">
+    <div class="ibox-content">
+        <input id="contextParam" type="hidden" value="${request.contextPath}"/>
+        <form method="get" class="form-horizontal">
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <span class="emergency-title">order审核异常状态更新</span>
+                </div>
+            </div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">Order编号:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input  class="form-control backstage-input" style="display: inline" type="text" id="applyNo" name="applyNo">
+                </div>
+
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">审核状态:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <select class="form-control m-b backstage-select" name="auditStatus" id="auditStatus">
+                        <option value="">--选择审核状态--</option>
+                        <option value="0">order中(0)</option>
+                        <option value="1">审核中(1)</option>
+                        <option value="2">Going中(2)</option>
+                        <option value="3">Getting中(3)</option>
+                        <option value="4">审核拒绝(4)</option>
+                        <option value="5">已废弃(5)</option>
+                        <option value="6">已结清(6)</option>
+                        <option value="7">已损失(7)</option>
+                        <option value="8">补充what中(8)</option>
+                        <option value="9">审核通过(9)</option>
+                        <option value="10">确认中(10)</option>
+                        <option value="13">已expired(13)</option>
+                        <option value="16">fowrard(16)</option>
+                        <option value="17">order失败(17)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">&nbsp;&nbsp;</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" style="display: inline" onclick="updateAuditStatus()">更新</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

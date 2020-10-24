@@ -1,0 +1,407 @@
+<!-- Going列表  -->
+<div><label class="col-sm-2 control-label backstage-select-label">审核信息</label></div>
+<div class="ibox float-e-margins backstage-right-div">
+    <input id="contextParam" type="hidden" value="${request.contextPath}"/>
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 申请时间 -->
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">审核时间:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input id="startTime" class="laydate-icon form-control layer-date backstage-date" readonly="readonly" placeholder="开始日期" name="startTime">
+                    <input id="endTime" class="laydate-icon form-control layer-date backstage-date" readonly="readonly" placeholder="结束日期" name="endTime">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 订单状态 -->
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">审核状态:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <select class="form-control m-b backstage-select" name="auditStatus" id="auditStatus">
+                        <option value="">-- 全部 --</option>
+                        <option value="0">未提交(0)</option>
+                        <option value="1">审核中(1)</option>
+                        <option value="2">running(2)</option>
+                        <option value="3">returning(3)</option>
+                        <option value="4">refuse(4)</option>
+                        <option value="5">redundant(5)</option>
+                        <option value="6">cledar(6)</option>
+                        <option value="7">losed(7)</option>
+                        <option value="8">reparing(8)</option>
+                        <option value="9">approved(9)</option>
+                    ##                        <option value="10">确认中(10)</option>
+                        <option value="13">expired(13)</option>
+                        <option value="16">forward(16)</option>
+                        <option value="17">failed(17)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">产品编号:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="输入产品编号" class="form-control backstage-input" type="text" id="applyNo" name="applyNo">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-2 backstage-select-label">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+##                <div class="col-sm-2 backstage-select-label">
+##                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="sendMsgs()">重&nbsp;&nbsp;&nbsp;发</button>
+##                </div>
+                <div class="col-sm-2 backstage-select-label">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="sendSelectMsgs()">重&nbsp;&nbsp;&nbsp;发&nbsp;&nbsp;&nbsp;ESB</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- 隐藏域 -->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">发送结果</h4>
+            </div>
+            <div class="modal-body">
+                <div id="sendResult" class="row pre-scrollable">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script type="text/javascript">
+
+    //日期控件
+    var startTime = {
+        elem: '#startTime',
+        format: 'YYYY-MM-DD hh:mm:ss',
+        istime: true,
+        max: laydate.now(),
+        choose: function (datas) {
+            endTime.min = datas;
+            endTime.start = datas;
+        }
+    };
+    var endTime = {
+        elem: '#endTime',
+        format: 'YYYY-MM-DD hh:mm:ss',
+        istime: true,
+        max: laydate.now(),
+        choose: function (datas) {
+            startTime.max = datas;
+        }
+    };
+    //定时任务
+    var readLogTask;
+    laydate(startTime);
+    laydate(endTime);
+    var sendTime;
+
+    //table
+    $('#table').bootstrapTable({
+        cache: false,
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        url: '${request.contextPath}/import/auditInfo/data',
+        undefinedText: '-',
+        striped: true,
+        pagination: true,
+        sidePagination: 'server',
+        pageSize: 10,
+        pageNumber: 1,
+        pageList: [],
+        queryParams: queryParams,
+        columns: [
+            {
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            }, {
+                field: 'auditTime',
+                title: '时间',
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return tableDateFormatter(value)
+                    }
+                }
+            }, {
+                field: 'applyNo',
+                title: 'loanId'
+            }, {
+                field: 'auditAmount',
+                title: '金额(元)',
+                formatter: money_formatter
+            }, {
+                field: 'auditStatus',
+                title: '小二状态',
+                width: "100px",
+                formatter:function(value, row, index) {
+                    return getAuditStatus(value);
+                }
+            }, {
+                field: 'fkAuditStatus',
+                title: 'risk状态'
+            }, {
+                field: 'applyNo',
+                title: '重发ESB消息',
+                formatter:function(value, row, index) {
+                    return '<input param = "'+ value +'" class="selectedValue" type="checkbox">';
+                }
+            }]
+    })
+
+    function getParams(){
+        var startTime = $("#startTime").val();
+        if (startTime != "") {
+            startTime = startTime.replace(/[^0-9]/mg, '');
+        }
+        var endTime = $("#endTime").val();
+        if (endTime != "") {
+            endTime = endTime.replace(/[^0-9]/mg, '');
+        }
+        var obj = {
+            auditStatus: $("#auditStatus").val(),
+            applyNo: $("#applyNo").val(),
+            startTime: startTime,
+            endTime: endTime
+        }
+        return obj;
+    }
+
+    //设置查询参数
+    function queryParams(params) {
+        if($("#ifPageOne").val() == 1) {
+            params.offset = 0;
+            var obj = $('#table').bootstrapTable('getOptions');
+            obj.pageNumber = 1;
+            $("#ifPageOne").val(0);
+        }
+        //applyDate
+        var startTime = $("#startTime").val();
+        if (startTime != "") {
+            startTime = startTime.replace(/[^0-9]/mg, '');
+        }
+        var endTime = $("#endTime").val();
+        if (endTime != "") {
+            endTime = endTime.replace(/[^0-9]/mg, '');
+        }
+        var obj = {
+            pageSize: params.limit,
+            pageNo: params.offset/10 + 1,
+            auditStatus: $("#auditStatus").val(),
+            applyNo: $("#applyNo").val(),
+            startTime: startTime,
+            endTime: endTime
+        }
+        return obj;
+    }
+    //查询按钮方法
+    function search() {
+        $("#ifPageOne").val(1);
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+
+
+    Date.prototype.format = function(format) {
+        var date = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),
+            "S+": this.getMilliseconds()
+        };
+        if (/(y+)/i.test(format)) {
+            format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        for (var k in date) {
+            if (new RegExp("(" + k + ")").test(format)) {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                        ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+            }
+        }
+        return format;
+    }
+
+
+    function showJson(obj){
+        var trElement = $(obj).parent().parent().parent()
+//        var json = $(obj).parent().find("input").val()
+        var json = $(obj).attr("data-id");
+        json = JSON.parse(json);
+        json = JSON.stringify(json, null, 4).replace(/\n/g, "<br/>").replace(/\s/g, "&nbsp;");
+        var insertElement=
+                "<tr class = 'json' >" +
+                "<td>J</td>" +
+                "<td><a class='hideJson' href='javascript:void(0);' onclick='hideJson(this)'>隐藏</a></td>" +
+                "<td colspan='19' style='width:200px;'>" + json +"</td>" +
+                "</tr>";
+        $(insertElement).insertAfter(trElement);
+        $(obj).hide();
+    }
+
+    function hideJson(obj) {
+        $(obj).parent().parent().prev().find(".showJson").show();
+        $(obj).parent().parent().eq(0).remove();
+    }
+
+    function getCfcaDesc(value) {
+        if (value == 0) {
+            return '未签署';
+        } else if (value == 1) {
+            return '已签署并已生成PDF';
+        } else if (value == 2) {
+            return '已签署，未生成PDF';
+        }
+    }
+
+    function sendMsgs(){
+        sendTime = new Date().format("yyyy-MM-dd hh:mm:ss");
+        var obj=getParams();
+        if(getParams().startTime == "" || getParams().endTime == "") {
+            alert('请选定审核时间!');
+            return;
+        }
+        if(readLogTask == undefined){
+            clearLog();
+        }else{
+            alert("还有正在发送的消息!请稍后再进行操作!");
+            return;
+        }
+        if(!window.confirm('确认要重发以下所有消息吗?')) {
+            return;
+        } else {
+            $("#myModal").modal("show");
+            sending();
+        }
+
+        $.ajax({
+            url: '${request.contextPath}/esb/send/msg/all',
+            type: 'POST',
+            contentType: 'application/x-www-form-urlencoded',
+            dataType: 'json',
+            data: {
+                auditStatus: getParams().auditStatus,
+                applyNo: getParams().applyNo,
+                startTime: getParams().startTime,
+                endTime: getParams().endTime
+            }
+        }).success(function(data) {
+            if(''!= data.msg){
+                alert(data.msg);
+            } else {
+                if(readLogTask == undefined){
+                    readLogTask = window.setInterval(readLog, 1000);
+                }
+            }
+        });
+    }
+
+    function sendSelectMsgs(){
+        sendTime = new Date().format("yyyy-MM-dd hh:mm:ss");
+        sending();
+        var loanIdList = [];
+        $(".selectedValue").each(function() {
+            if ($(this)[0].checked == true) {
+                loanIdList.push($(this).attr("param"))
+            }
+        });
+        if(loanIdList.length == 0 ) {
+            alert('请选择需要发送esb的数据!');
+            return;
+        }
+        if(readLogTask == undefined){
+            clearLog();
+        }else{
+            alert("还有正在发送的消息!请稍后再进行操作!");
+            return;
+        }
+        if(!window.confirm('确认要重发以下所有消息吗?' + loanIdList)) {
+            return;
+        }else{
+            $("#myModal").modal("show");
+            sending();
+        }
+        $.ajax({
+            url: '${request.contextPath}/esb/send/msg/selected',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(loanIdList)
+        }).success(function(data) {
+            if(''!= data.msg){
+                alert(data.msg);
+            } else {
+                if(readLogTask == undefined){
+                    readLogTask = window.setInterval(readLog, 1000);
+                }
+            }
+        });
+    }
+
+    function readLog(){
+        $.ajax({
+            url: '${request.contextPath}/esb/send/log/read',
+            type: 'POST',
+            contentType: 'application/json',
+        }).success(function(data) {
+            if(''!= data.msg) {
+                $("#sendResult").html(sendTime + '</br>' + data.msg);
+                if(data.msg.indexOf("完毕") > 0){
+                    window.clearInterval(readLogTask);
+                    readLogTask = undefined;
+                    clearLog();
+                }
+            } else {
+                sending();
+            }
+        });
+    }
+
+    function clearLog(){
+        $.ajax({
+            url: '${request.contextPath}/esb/send/log/clear',
+            type: 'POST',
+            contentType: 'application/json',
+        }).success(function(data) {
+        });
+    }
+
+    function sending() {
+        $("#sendResult").html("正在发送中...");
+    }
+    function money_formatter(value, row, index) {
+        if (undefined ==  value) {
+            return;
+        } else {
+            return (value/100.0).toFixed(2);
+        }
+    }
+</script>

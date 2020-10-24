@@ -1,0 +1,105 @@
+<!-- Getting信息  -->
+<div><label class="col-sm-2 control-label backstage-select-label">some信息</label></div>
+<div class="ibox float-e-margins backstage-right-div">
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">UID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入UID" class="form-control backstage-input" type="text" id="uid" name="uid">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">someID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入someID" class="form-control backstage-input" type="text" id="bindId" name="bindId">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    //table
+    $('#table').bootstrapTable({
+        cache: false,
+        method: 'post',
+        url: '${request.contextPath}/pay/bind',
+        sidePagination: 'server',
+        clickToSelect: true,
+        pageSize: 10,
+        pageList: [10, 25],
+        queryParams: queryParams,
+        columns: [
+            {
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            }, {
+                field: 'uid',
+                title: 'UID',
+                width: "50px"
+            },{
+                field: 'accountName',
+                title: 'accountName',
+                width: "50px"
+            }, {
+                field: 'bankName',
+                title: 'bankName',
+                width: "50px"
+            }, {
+                field: 'cardId',
+                title: 'cardId',
+                width: "50px"
+            }, {
+                field: 'createTime',
+                title: '时间',
+                width: "50px"
+            },{
+                field: 'bindId',
+                title: 'bindId',
+                width: "50px"
+            }]
+    })
+
+    //设置查询参数
+    function queryParams(params) {
+        var obj = {
+            uid: parseInt($("#uid").val().trim()),
+            bindId: $("#bindId").val().trim()
+        }
+        return obj;
+    }
+    //查询按钮方法
+    function search() {
+        var uid = $("#uid").val().trim();
+        if (uid == undefined  || uid == "" || uid == null || isNaN(parseInt(uid))) {
+            alert("请输入正确的UID");
+            return;
+        }
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+</script>

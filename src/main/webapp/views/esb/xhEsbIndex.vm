@@ -1,0 +1,211 @@
+<div class="ibox float-e-margins backstage-right-div">
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">OrderID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入OrderID" class="form-control backstage-input" type="text" id="applyNo" name="applyNo">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- riskID -->
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">riskID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input class="form-control backstage-input" type="text" id="fkLoanNo" name="fkLoanNo" placeholder="请输入riskID">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- 隐藏域 -->
+<div style="display: none">
+    <!-- 如果点击搜索,则需要将页码制为1 -->
+    <input id="ifPageOne" name="ifPageOne" value="0"/>
+</div>
+<script type="text/javascript">
+
+    //table
+    $('#table').bootstrapTable({
+        cache: false,
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        url: '${request.contextPath}/esb/xh/data',
+        undefinedText: '-',
+        striped: true,
+        pagination: true,
+        sidePagination: 'server',
+        pageSize: 10,
+        pageNumber: 1,
+        pageList: [],
+        queryParams: queryParams,
+        columns: [
+            {
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },{
+                field: 'data.loanInfo.loanRequireInfo.reqTime',
+                title: 'requestTime',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    var str =  typeof value === 'string' ? value.substr(0, 16) : '';
+                    return tableDateFormatter(str);
+                }
+            }, {
+                field: 'msgType',
+                title: 'msgType',
+                width: "50px"
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.requestType',
+                title: 'requestType',
+                width: "50px"
+            },{
+                field: 'data.loanInfo.loanRequireInfo.requestId',
+                title: 'requestId',
+                width: "120px"
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.loanId',
+                title: 'loanId',
+                width: "120px"
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.requireAmount',
+                title: 'requireAmount'
+            }, {
+                field: 'json',
+                title: 'JSON',
+                formatter: function(value, row, index) {
+                    return "<div>" +
+                            "<a class='showJson' data-id='"+ value +"' href='javascript:void(0);' onclick='showJson(this)'>get</a><br/>" +
+                            "<a class='sendMsg' data-id='" + row.data.loanInfo.loanRequireInfo.loanId + "' href='javascript:void(0);' onclick='sendMsg(this)'>重发</a><br/>" +
+                            "</div>";
+                }
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.term',
+                title: 'term',
+                width: "50px"
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.borrowPeriodUnit',
+                title: 'borrowPeriodUnit'
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.repayMethod',
+                title: 'repayMethod'
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.bizCode',
+                title: 'bizCode'
+            }, {
+                field: 'data.loanInfo.userBaseInfo.userName',
+                title: 'userName'
+            }, {
+                field: 'data.loanInfo.userBaseInfo.userId',
+                title: 'userId'
+            }, {
+                field: 'data.loanInfo.userBaseInfo.idCard',
+                title: 'idCard'
+            }, {
+                field: 'data.loanInfo.loanRequireInfo.loanChannel',
+                title: 'loanChannel'
+            }, {
+                field: 'esbSendResult',
+                title: '发送结果',
+                formatter: function(value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else if ('true' == value) {
+                        return '发送成功';
+                    } else {
+                        return '发送失败';
+                    }
+                }
+            }]
+    })
+
+    /*$().ready(function(){
+        $("#page-wrapper").on("click",".showJson", showJson);
+        $("#page-wrapper").on("click",".hideJson", hideJson);
+        $("#page-wrapper").on("click",".sendMsg", sendMsg);
+    })*/
+    //设置查询参数
+    function queryParams(params) {
+        if($("#ifPageOne").val() == 1) {
+            params.offset = 0;
+            var obj = $('#table').bootstrapTable('getOptions');
+            obj.pageNumber = 1;
+            $("#ifPageOne").val(0);
+        }
+        var obj = {
+            pageSize: params.limit,
+            pageNumber: params.offset/10 + 1,
+            applyNo: $("#applyNo").val(),
+            fkLoanNo: $("#fkLoanNo").val()
+        }
+        return obj;
+    }
+    //查询按钮方法
+    function search() {
+        $("#ifPageOne").val(1);
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+
+    function showJson(obj){
+        obj = obj;
+        var trElement = $(obj).parent().parent().parent()
+//        var json = $(obj).parent().find("input").val()
+        var json = $(obj).attr("data-id");
+        json = JSON.parse(json);
+        json = JSON.stringify(json, null, 4).replace(/\n/g, "<br/>").replace(/\s/g, "&nbsp;");
+        var insertElement=
+                "<tr class = 'json' >" +
+                    "<td>J</td>" +
+                    "<td><a class='hideJson' href='javascript:void(0);' onclick='hideJson(this)'>隐藏</a></td>" +
+                    "<td colspan='19' style='width:200px;'>" + json +"</td>" +
+                "</tr>";
+        $(insertElement).insertAfter(trElement);
+        $(obj).hide();
+    }
+
+    function hideJson(obj) {
+        $(obj).parent().parent().prev().find(".showJson").show();
+        $(obj).parent().parent().eq(0).remove();
+    }
+
+    function sendMsg(obj){
+        var id = $(obj).attr("data-id");
+        if(!window.confirm('确认要发送ID为'+ id +'的ESB消息吗?')) {
+            return;
+        }
+        $.ajax({
+            url: '${request.contextPath}/esb/send/msg/2risk',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id : id,
+                registerName : "loanIn2risk"
+            }
+        }).done(function(data) {
+            alert('sendEsbMsg for ' + id + ', result is: ' + JSON.stringify(data));
+        });
+    }
+</script>

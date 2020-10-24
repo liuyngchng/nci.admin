@@ -1,0 +1,229 @@
+<!-- Going列表  -->
+<div><label class="col-sm-2 control-label backstage-select-label">whoAm信息</label></div>
+<div class="ibox float-e-margins backstage-right-div">
+    <input id="contextParam" type="hidden" value="${request.contextPath}"/>
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">UID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入UID" class="form-control backstage-input" type="text" id="uid" name="uid">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-2 backstage-select-label">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="deleteIcAmByUid()">删&nbsp;&nbsp;&nbsp;除</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- 隐藏域 -->
+<div style="display: none">
+    <!-- 如果点击搜索,则需要将页码制为1 -->
+    <input id="ifPageOne" name="ifPageOne" value="0"/>
+</div>
+<script type="text/javascript">
+
+    //table
+    $('#table').bootstrapTable({
+        cache: false,
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        url: '${request.contextPath}/private/idCard/Am/data',
+        undefinedText: '-',
+        striped: true,
+        pagination: true,
+        sidePagination: 'server',
+        pageSize: 10,
+        pageNumber: 1,
+        pageList: [],
+        queryParams: queryParams,
+        columns: [
+            {
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },{
+                field: 'uid',
+                title: 'UID',
+                width: "50px"
+            }, {
+                field: '创建时间',
+                title: 'createTime',
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return formatTimestamp(value)
+                    }
+                }
+            }, {
+                field: 'name',
+                title: '姓名',
+                width: "50px"
+            }, {
+                field: 'id5',
+                title: 'who号',
+                width: "50px"
+            }, {
+                field: 'race',
+                title: '民族',
+                width: "50px"
+            }, {
+                field: 'address',
+                title: '住址',
+                width: "120px"
+            }, {
+                field: 'issueUnit',
+                title: '发证单位',
+                width: "120px"
+            }, {
+                field: 'effectDate',
+                title: '生效日期',
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return formatTimestamp(value)
+                    }
+                }
+            }, {
+                field: 'expireDate',
+                title: '过期日期',
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return formatTimestamp(value)
+                    }
+                }
+            }, {
+                field: 'frontOriginUrl',
+                title: 'who正面',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return '<img src="'+ value +'" width="500px">'
+                    }
+                }
+            }, {
+                field: 'backOriginUrl',
+                title: 'who背面',
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return '<img src="'+ value +'" width="500px">'
+                    }
+                }
+            }, {
+                field: 'frontScanRes',
+                title: '正面识别结果'
+            }, {
+                field: 'backScanRes',
+                title: '背面识别结果'
+            }, {
+                field: '设备信息',
+                title: 'agent'
+            }]
+    })
+
+    //设置查询参数
+    function queryParams(params) {
+        if($("#ifPageOne").val() == 1) {
+            params.offset = 0;
+            var obj = $('#table').bootstrapTable('getOptions');
+            obj.pageNumber = 1;
+            $("#ifPageOne").val(0);
+        }
+        var obj = {
+            pageSize: params.limit,
+            pageNumber: params.offset/10 + 1,
+            uid: $("#uid").val(),
+            loanId: $("#loanId").val()
+        }
+        return obj;
+    }
+    //查询按钮方法
+    function search() {
+        var uid = $("#uid").val().trim();
+        if (uid == undefined  || uid == "" || uid == NaN || uid == null) {
+            alert("请输入数字类型uid");
+            return;
+        }
+        $("#ifPageOne").val(1);
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+    Date.prototype.format = function(format) {
+        var date = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),
+            "S+": this.getMilliseconds()
+        };
+        if (/(y+)/i.test(format)) {
+            format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        for (var k in date) {
+            if (new RegExp("(" + k + ")").test(format)) {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                        ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+            }
+        }
+        return format;
+    }
+
+    function deleteIcAmByUid(){
+        var contextParam = $("#contextParam").val();
+        var uid = $("#uid").val().trim();
+        if (undefined == uid || '' ==  uid) {
+            alert("请输入UID");
+            return;
+        }
+        if(!window.confirm("确实要删除UID为" + uid + "的whoAm数据吗？删除后不可恢复.")) {
+            return;
+        }
+        $.ajax({
+            url: contextParam + '/private/idCard/Am/delete',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                uid : uid
+            },
+            success: function(data) {
+                alert(JSON.stringify(data));
+                return false;
+            },
+            error: function (data) {
+                alert(JSON.stringify(data));
+                return false;
+            }
+        })
+    }
+</script>

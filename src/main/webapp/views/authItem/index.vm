@@ -1,0 +1,140 @@
+<!-- Going列表  -->
+<div><label class="col-sm-2 control-label backstage-select-label">credit Info</label></div>
+<div class="ibox float-e-margins backstage-right-div">
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">UID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入OrderID" class="form-control backstage-input" type="text" id="uid" name="uid">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- 隐藏域 -->
+<div style="display: none">
+    <!-- 如果点击搜索,则需要将页码制为1 -->
+    <input id="ifPageOne" name="ifPageOne" value="0"/>
+</div>
+<script type="text/javascript">
+
+    //table
+    $('#table').bootstrapTable({
+        cache: false,
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        url: '${request.contextPath}/private/auth/item/data',
+        undefinedText: '-',
+        striped: true,
+        pagination: true,
+        sidePagination: 'server',
+        pageSize: 10,
+        pageNumber: 1,
+        pageList: [],
+        queryParams: queryParams,
+        columns: [
+            {
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },{
+                field: 'uid',
+                title: 'UID',
+                width: "50px"
+            }, {
+                field: 'creditInfo.zhima',
+                title: '芝麻',
+                formatter:function(value, row, index) {
+                    switch(value){
+                        case 0: return '未做(0)';
+                        case 1: return '已做(1)';
+                        case 2: return '过期(2)';
+                        default : return undefined;
+                    }
+                }
+            }, {
+                field: 'creditInfo.operator',
+                title: '运营商',
+                formatter:function(value, row, index) {
+                    switch(value){
+                        case 0: return '未做(0)';
+                        case 1: return '已做(1)';
+                        case 2: return '过期(2)';
+                        default : return undefined;
+                    }
+                }
+            }, {
+                field: 'authInfo.living',
+                title: '是否已提交活体',
+                formatter:function(value, row, index) {
+                    switch(value){
+                        case 0: return '未做(0)';
+                        case 1: return '已做(1)';
+                        default : return undefined;
+                    }
+                }
+            }, {
+                field: 'authInfo.profile',
+                title: 'sky档案',
+                formatter:function(value, row, index) {
+                    switch(value){
+                        case 0: return '职业信息未填写(0)';
+                        case 1: return '联系信息未填写(1)';
+                        case 2: return '银行卡信息未填写(2)';
+                        case 99: return '已完成(99)';
+                        default : return undefined;
+                    }
+                }
+            }]
+    })
+
+    //设置查询参数
+    function queryParams(params) {
+        if($("#ifPageOne").val() == 1) {
+            params.offset = 0;
+            var obj = $('#table').bootstrapTable('getOptions');
+            obj.pageNumber = 1;
+            $("#ifPageOne").val(0);
+        }
+        var obj = {
+            pageSize: params.limit,
+            pageNumber: params.offset/10 + 1,
+            uid: $("#uid").val(),
+            loanId: $("#loanId").val()
+        }
+        return obj;
+    }
+    //查询按钮方法
+    function search() {
+        var uid = $("#uid").val().trim();
+        if (uid == undefined  || uid == "" || uid == NaN || uid == null) {
+            alert("请输入数字类型uid");
+            return;
+        }
+        $("#ifPageOne").val(1);
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+</script>

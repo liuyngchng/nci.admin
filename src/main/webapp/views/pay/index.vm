@@ -1,0 +1,360 @@
+<div><label class="col-sm-2 control-label backstage-select-label">bfpay信息</label></div>
+<div class="ibox float-e-margins backstage-right-div">
+    <input id="contextParam" type="hidden" value="${request.contextPath}"/>
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">UID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入UID" class="form-control backstage-input" type="text" id="uid" name="uid">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">充值时间:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input id="startTime" class="laydate-icon form-control layer-date backstage-date" readonly="readonly" placeholder="开始日期" name="startTime">
+                    <input id="endTime" class="laydate-icon form-control layer-date backstage-date" readonly="readonly" placeholder="结束日期" name="endTime">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">充值类型:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <select class="form-control m-b backstage-select" name="cahrgeCode" id="chargeCode">
+                        <option value="">-- 全部 --</option>
+                        <option value="1">P2P</option>
+                        <option value="2">bl</option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">someID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入someID" class="form-control backstage-input" type="text" id="bindId" name="bindId">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">transID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入短信接口返回值" class="form-control backstage-input" type="text" id="transId" name="transId">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-2 backstage-select-label">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table" data-detail-view="true"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:450px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">红包信息</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="fixed-table-container">
+                        <table id="coupontable"></table>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+<!-- 隐藏域 -->
+<div style="display: none">
+    <!-- 如果点击搜索,则需要将页码制为1 -->
+    <input id="ifPageOne" name="ifPageOne" value="0"/>
+</div>
+<script type="text/javascript">
+    //日期控件
+    var uid, id;
+    var startTime = {
+        elem: '#startTime',
+        format: 'YYYY-MM-DD hh:mm:ss',
+        istime: true,
+        max: laydate.now(),
+        choose: function (datas) {
+            endTime.min = datas;
+            endTime.start = datas;
+        }
+    };
+    var endTime = {
+        elem: '#endTime',
+        format: 'YYYY-MM-DD hh:mm:ss',
+        istime: true,
+        max: laydate.now(),
+        choose: function (datas) {
+            startTime.max = datas;
+        }
+    };
+    laydate(startTime);
+    laydate(endTime);
+
+    //table
+    $('#table').bootstrapTable({
+        cache: false,
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        detailView: true, //父子表
+        url: '${request.contextPath}/pay/log',
+        undefinedText: '-',
+        striped: true,
+        pagination: true,
+        sidePagination: 'server',
+        pageSize: 10,
+        pageNumber: 1,
+        pageList: [],
+        queryParams: queryParams,
+        onExpandRow: function (index, row, $detail) {
+            InitSubTable(index, row, $detail);
+        },
+        columns: [
+            {
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },{
+                field: 'uid',
+                title: 'UID',
+                width: "50px"
+            },{
+                field: 'createTime',
+                title: '时间',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+                    }
+                }
+            },{
+                field: 'amount',
+                title: '金额(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'bindId',
+                title: 'bindId',
+                width: "50px"
+            },{
+                field: 'ticketId',
+                title: '红包ID',
+                width: "50px",
+                formatter: function(value, row, index) {
+                    if(value == 0) return;
+                    else {
+                        return '<div>'+
+                            '<a onclick="onCLickCoupon(' + row.uid + ',' + value + ')">'+value+'</a>'+
+                            '</div>';
+                    }
+                }
+            },{
+                field: 'retCode',
+                title: 'retCode',
+                width: "50px",
+                formatter: function(value, row, index) {
+                    switch (value) {
+                        case 0:
+                            return "成功(0)";
+                        case 3:
+                            return "未知(3)";
+                        case 99:
+                            return "内部错误(99)";
+                        default:
+                            return value;
+                    }
+                }
+            }, {
+                field: 'errorCode',
+                title: 'errorCode',
+                width: "50px"
+            },{
+                field: 'transId',
+                title: 'transId',
+                width: "50px",
+                formatter:function(value, row, index) {
+                    if(value=='') return;
+                    else return value;
+                }
+            }]
+    })
+
+
+
+    //设置查询参数
+    function queryParams(params) {
+        if($("#ifPageOne").val() == 1) {
+            params.offset = 0;
+            var obj = $('#table').bootstrapTable('getOptions');
+            obj.pageNumber = 1;
+            $("#ifPageOne").val(0);
+        }
+        //applyDate
+        var startTime = $("#startTime").val();
+        var endTime = $("#endTime").val();
+        var charge_type = $("#chargeCode").val();
+        var uid = $("#uid").val();
+        var bindId = $("#bindId").val();
+
+
+        var obj = {
+            pageSize: params.limit,
+            pageNo: params.offset/10 + 1,
+            startTime: startTime,
+            endTime: endTime,
+            uid: uid,
+            chargeType: charge_type,
+            bindId: bindId,
+            transId: $("#transId").val()
+        }
+        return obj;
+    }
+    //查询按钮方法
+    function search() {
+        $("#ifPageOne").val(1);
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+
+    function money_formatter(value, row, index) {
+        if (undefined ==  value) {
+            return;
+        } else {
+            return (value/100.0).toFixed(2);
+        }
+    }
+    function onCLickCoupon(uid , id){
+        $('#couponModal').modal('show');
+        //coupon table
+        $('#coupontable').bootstrapTable({
+            cache: false,
+            method: 'post',
+            url: '${request.contextPath}/welfare/coupon/info',
+            dataType: 'json',
+            queryParams: {
+                uid: uid,
+                id:  id
+            },
+            sidePagination: 'server',
+            clickToSelect: true,
+            pageSize: 10,
+            pageList: [2, 12],
+            columns: [{
+                field: 'key',
+                title: 'Name',
+                formatter:function(value, row, index){
+                    switch(value){
+                        case 'errorCode' : return '错误代码(errorCode)';
+                        case 'errorMessage': return '错误信息(errorMessage)';
+                        case 'id': return '红包Id(id)';
+                        case 'uid': return '用户Id(uid)';
+                        case 'name': return '红包名称(name)';
+                        case 'couponId': return value;
+                        case 'getTime': return value;
+                        case 'beginTime': return '生效时间(beginTime)';
+                        case 'expiredTime': return '过期时间(expiredTime)';
+                        case 'usedTime': return value;
+                        case 'amount': return '红包金额(元)(amount)';
+                        case 'couponStatus': return '红包状态(couponStatus)';
+                        case 'usageDesc': return '红包使用规则(usageDesc)';
+                        case 'minLoanAmount': return '单笔最少flush可用(元)(minLoanAmount)';
+                        default: return value;
+                    }
+                }
+
+            },{
+                field: 'value',
+                title: 'Field',
+                formatter:function(value, row, index){
+                    switch(row.key){
+                        case 'beginTime':
+                        case 'expiredTime':
+                        case 'getTime': return new Date(parseInt(value)).format('yyyy-MM-dd hh:mm:ss');
+                        case 'minLoanAmount':
+                        case 'amount': return money_formatter(value, row, index);
+                        case 'couponStatus': {
+                            switch(value){
+                                case 'INIT' : return '有效(0)';
+                                case 'LOCKING': return '锁定(1)';
+                                case 'USED' : return '已使用(2)';
+                                case 'EXPIRED': return '已过期(3)';
+                                default: return value;
+                            }
+                        }
+                        default: return value;
+                    }
+                }
+            }]
+        });
+    }
+
+    function InitSubTable(index, row, $detail) {
+        var parentid = row.id;
+        var subtable = $detail.html('<table></table>').find('table');
+        $(subtable).bootstrapTable({
+            url: '${request.contextPath}/pay/repay/log',
+            method: 'post',
+            queryParams: { transId : row.transId},
+            sidePagination: 'server',
+            clickToSelect: true,
+            pageSize: 10,
+            pageList: [10, 25],
+            columns: [{
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            },{
+                field: 'transId',
+                title: 'transId',
+                width: "50px"
+            },{
+                field: 'fkLoanId',
+                title: 'loanId',
+                width: "50px"
+            },{
+                field: 'repayPeriodsCounts',
+                title: '期数',
+                width: "50px"
+            },{
+                field: 'repayTotalAmount',
+                title: '金额(元)',
+                width: "50px",
+                formatter: money_formatter
+            }]
+        });
+    };
+
+</script>

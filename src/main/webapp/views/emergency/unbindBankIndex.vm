@@ -1,0 +1,40 @@
+<div class="ibox float-e-margins backstage-right-div">
+    <div class="ibox-content">
+        <input id="contextParam" type="hidden" value="${request.contextPath}"/>
+        <form method="get" class="form-horizontal">
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <span class="emergency-title">解绑银行卡</span>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">paychannel:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <select class="form-control m-b backstage-select" name="payChannel" id="payChannel">
+                        <option value="">--选择paychannel--</option>
+                        <option value="1">bf</option>
+                        <option value="2">bl</option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label"> 银行卡ID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input  class="form-control backstage-input" style="display: inline" type="text" id="bankCardId" name="bankCardId" placeholder="一般由线下提供">
+                </div>
+                <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">&nbsp;</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" style="display: inline" onclick="unbindBank()">提&nbsp;&nbsp;&nbsp;&nbsp;交</button>
+                </div>
+                <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            </div>
+        </form>
+    </div>
+</div>
+

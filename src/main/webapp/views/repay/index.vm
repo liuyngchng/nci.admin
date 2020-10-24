@@ -1,0 +1,320 @@
+<!-- Getting信息  -->
+<div><label class="col-sm-2 control-label backstage-select-label">whereGetting信息</label></div>
+<div class="ibox float-e-margins backstage-right-div">
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">UID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入UID" class="form-control backstage-input" type="text" id="uid" name="uid">
+                </div>
+            </div>
+
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">riskID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入小二riskID" class="form-control backstage-input" type="text" id="lid" name="lid">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">Getting期数:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input placeholder="请输入Getting期数" class="form-control backstage-input" type="text" id="rtm" name="rtm">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查&nbsp;&nbsp;&nbsp;询</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- 隐藏域 -->
+<div style="display: none">
+    <!-- 如果点击搜索,则需要将页码制为1 -->
+    <input id="ifPageOne" name="ifPageOne" value="0"/>
+</div>
+<script type="text/javascript">
+
+    //table
+    $('#table').bootstrapTable({
+        cache: false,
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',
+        dataType: 'json',
+        url: '${request.contextPath}/repay/data',
+        undefinedText: '-',
+        striped: true,
+        pagination: true,
+        sidePagination: 'server',
+        pageSize: 50,
+        pageNumber: 1,
+        pageList: [],
+        queryParams: queryParams,
+        columns: [
+            {
+                field: 'number',
+                title: '序号',
+                width: "50px",
+                formatter: function (value, row, index) {
+                    return index + 1;
+                }
+            }, {
+                field: 'uid',
+                title: 'UID',
+                width: "50px"
+            }, {
+                field: 'loanId',
+                title: 'loanID',
+                width: "50px"
+            }, {
+                field: 'createTime',
+                title: '创建时间',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+                    }
+                }
+            },{
+                field: 'updateTime',
+                title: '修改时间',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+                    }
+                }
+            },{
+                field: 'totalTerm',
+                title: '总期数',
+                width: "50px"
+            }, {
+                field: 'repayTerm',
+                title: '当前期数',
+                width: "50px"
+            }, {
+                field: 'status',
+                title: 'Getting状态',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    switch(value){
+                        case 0: return 'Getting中(0)';
+                        case 1: return '已expired(1)';
+                        case 2: return '已Getting(2)';
+                        case 99: return '处理中(99)';
+                        default : return undefined;
+                    }
+                }
+            },{
+                field: 'lastRepayDate',
+                title: '最迟Getting日期',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+                    }
+                }
+            },{
+                field: 'reviseRepayDate',
+                title: '每期修正Getting日',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+                    }
+                }
+            },{
+                field: 'repaidTime',
+                title: '实际Getting日期',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+                    }
+                }
+            },{
+                field: 'repayAmount',
+                title: '每期应还金额(元)',
+                width: "50px",
+                formatter: money_formatter
+            }, {
+                field: 'repaidAmount',
+                title: '每期已还金额(元)',
+                width: "50px",
+                formatter: money_formatter
+            }, {
+                field: 'repayPrincipal',
+                title: '每期应还本金(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'repaidPrincipal',
+                title: '每期已还本金(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'repayFee',
+                title: '每期应还利息(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'repaidFee',
+                title: '每期已还利息(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'totalOverdueFine',
+                title: '每期应还expired罚金(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'repaidOverdueFine',
+                title: '每期已还expired罚金(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'isLock',
+                title: '锁定状态',
+                width: "50px",
+                formatter:function(value, row, index) {
+                    if(value == 1) return "锁定中(1)";
+                    else return value;
+                }
+            },{
+                field: 'repayDate',
+                title: '应还日期',
+                width: "50px",
+                formatter:function (value, row, index) {
+                    if (undefined ==  value || '' == value) {
+                        return;
+                    } else {
+                        return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+                    }
+                }
+            },{
+                field: 'overdueDays',
+                title: 'expired天数',
+                width: "50px"
+            },{
+                field: 'bidStatus',
+                title: '项目Getting状态',
+                width: "50px",
+                formatter:function(value, row, index) {
+                    switch(value){
+                        case 21: return '正常Getting中(21)';
+                        case 22: return '已expired(22)';
+                        case 32: return '已结清(32)';
+                        default : return value;
+                    }
+                }
+            },{
+                field: 'loanType',
+                title: 'channel',
+                width: "50px"
+            },{
+                field: 'bidChannel',
+                title: 'channel标识',
+                width: "50px"
+            },{
+                field: 'penalty',
+                title: '违约金(提前Getting)(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'repaidPlatformFee',
+                title: '实际已还平台管理费(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'repayPlatformFee',
+                title: '应还平台管理费(元)',
+                width: "50px",
+                formatter: money_formatter
+            },{
+                field: 'assetType',
+                title: '资产类型',
+                width: "50px",
+                formatter:function(value, row, index) {
+                    switch(value){
+                        case 1: return 'P2P(1)';
+                        case 2: return 'bl(2)';
+                        default : return value;
+                    }
+                }
+            },{
+                field: 'fineMgtFee',
+                title: '罚金管理费(元)',
+                width: "50px",
+                formatter: money_formatter
+            }]
+    })
+
+    //设置查询参数
+    function queryParams(params) {
+        if($("#ifPageOne").val() == 1) {
+            params.offset = 0;
+            var obj = $('#table').bootstrapTable('getOptions');
+            obj.pageNumber = 1;
+            $("#ifPageOne").val(0);
+        }
+        var rtm = $("#rtm").val().trim();
+        if (rtm == "") rtm = 0;
+
+        var uid = $("#uid").val().trim();
+        if(uid == "") uid = 0;
+        var obj = {
+            pageSize: params.limit,
+            pageNo: params.offset/50 + 1,
+            lid: $("#lid").val(),
+            rtm: rtm,
+            uid: uid
+        }
+        return obj;
+    }
+    //查询按钮方法
+    function search() {
+        var lid = $("#lid").val().trim();
+        var uid = $("#uid").val().trim();
+        if (lid == "" && uid == "") {
+            alert("UID和riskID不能同时为空!");
+            return;
+        }
+        $("#ifPageOne").val(1);
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+    function money_formatter(value, row, index) {
+        if (undefined ==  value) {
+            return;
+        } else {
+            return (value/100.0).toFixed(2);
+        }
+    }
+</script>

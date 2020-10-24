@@ -1,0 +1,202 @@
+<style type="text/css">
+    td {
+        overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+    }
+</style>
+<div class="ibox float-e-margins backstage-right-div">
+    <div class="ibox-content">
+        <form method="get" class="form-horizontal">
+            <!-- 产品类型 -->
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">产品类型:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <select class="form-control m-b backstage-select" name="loanType" id="loanType">
+                        <option value="0">全部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <!-- channel -->
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">channel:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <select class="form-control m-b backstage-select" name="bidChannel" id="bidChannel">
+                        <option value="0">全部</option>
+                    </select>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <!-- riskID -->
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">riskID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input class="form-control backstage-input" type="text" id="loanId" name="loanId">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">小二订单ID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input class="form-control backstage-input" type="text" id="applyNo" name="applyNo">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <!--合作方ID-->
+            <div class="form-group backstage-form-group">
+                <label class="col-sm-2 control-label backstage-select-label">合作方ID:</label>
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <input class="form-control backstage-input" type="text" id="partnerId" name="partnerId">
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+
+            <!-- 操作按钮 -->
+            <div class="form-group backstage-form-group">
+                <div class="col-sm-10 backstage-col-sm-10">
+                    <button type="button" class="btn btn-w-m btn-danger backstage-button" onclick="search()">查询</button>
+                </div>
+            </div>
+            <div class="hr-line-dashed backstage-hr-line-dashed"></div>
+        </form>
+    </div>
+    <div class="ibox-content">
+        <div class="bootstrap-table table-responsive backstage-table-div">
+            <div class="fixed-table-container">
+                <table id="table" style="TABLE-LAYOUT:fixed;WORD-WRAP:break_word;table-layout:fixed"></table>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- 隐藏域 -->
+<div style="display: none">
+    <!-- 如果点击搜索,则需要将页码制为1 -->
+    <input id="ifPageOne" name="ifPageOne" value="0"/>
+</div>
+<script type="text/javascript">
+    //table
+    $('#table').bootstrapTable({
+        cache: true,                                    //设置为 true 禁用 AJAX 数据缓存
+        method: 'post',
+        contentType: 'application/x-www-form-urlencoded',                //发送到服务器的数据编码类型
+        dataType: 'json',                               //服务器返回的数据类型
+        url: '${request.contextPath}/notify/list',
+        undefinedText: '-',                             //当数据为 undefined 时显示的字符
+        striped: true,                                  //设置为 true 会有隔行变色效果
+        pagination: true,                               //设置为 true 会在表格底部显示分页条
+        sidePagination: 'server',                        //设置在哪里进行分页，可选值为 'client' 或者 'server'。设置 'server'时，必须设置 服务器数据地址（url）或者重写ajax方法
+        pageList: [],
+        queryParams: queryParams,
+        columns: [{
+            field: '',
+            title: '序号',
+            width: "50px",
+            formatter: function (value, row, index) {
+                return index + 1;
+            }
+        }, {
+            field: 'id',
+            title: '消息ID',
+            width: "100px"
+        }, {
+            field: 'loanType',
+            title: '产品类型',
+            width: "80px",
+            formatter: function (value, row, index) {
+                if (0 != value) {
+                    return value;
+                }
+            }
+        }, {
+            field: 'bidChannel',
+            title: 'channel',
+            width: "50px",
+            formatter: function (value, row, index) {
+                if (0 != value) {
+                    return value;
+                }
+            }
+        }, {
+            field: 'loanId',
+            title: 'riskID',
+        }, {
+            field: 'applyNo',
+            title: '小二订单ID'
+        }, {
+            field: 'partnerId',
+            title: '第三方订单号'
+        },{
+            field: 'context',
+            title: '下发内容',
+            width: "20%",
+            formatter: function(value, row, index) {
+                if ("null" != value) {
+                    return value;
+                }
+            }
+        },{
+            field: 'status',
+            title: '发送状态',
+            width: "80px",
+            formatter: function(value, row, index) {
+                if (1 == value) {
+                    return "成功";
+                }
+                return "失败";
+            }
+        }, {
+            field: 'updateTime',
+            title: '成功操作时间'
+        },{
+            field: 'createTime',
+            title: '生成时间'
+        }, {
+            title: '操作',
+            width: "100px",
+            formatter: function (value, row, index) {
+                var cls = row.status == 1 ? "btn-success" : "btn-warning";
+                return "<button type='button' class='btn " + cls + "' onclick=\"dohandler('" + row.id + "')\">重新下发</button>"
+            }
+        }]
+    })
+    //设置查询参数
+    function queryParams(params) {
+        if($("#ifPageOne").val() == 1) {
+            params.offset = 0;
+            var obj = $('#table').bootstrapTable('getOptions');
+            obj.page = 1;
+            $("#ifPageOne").val(0);
+        }
+        var obj = {
+            size: 10,
+            page: params.offset / 10,
+            loanType: $("#loanType").val(),
+            bidChannel: $("#bidChannel").val(),
+            loanId: $("#loanId").val(),
+            applyNo: $("#applyNo").val(),
+            partnerId: $("#partnerId").val()
+        }
+        return obj;
+    }
+
+    //查询按钮方法
+    function search() {
+        $("#ifPageOne").val(1);
+        $('#table').bootstrapTable('removeAll');
+        $('#table').bootstrapTable('refresh');
+    }
+
+    function dohandler(mid) {
+        $.post("${request.contextPath}/notify/retry", {id : mid}, function(resp) {
+            if (resp.errorCode == 0) {
+                alert("下发成功");
+            } else {
+                alert("下发失败")
+            }
+        }, "json")
+    }
+</script>
