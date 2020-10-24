@@ -28,7 +28,7 @@ public final class ConfigController {
     /**
      * Constant.
      */
-    private static final String EMERGENCY_PERMISSION = "xiaoer.emergency";
+    private static final String EMERGENCY_PERMISSION = "d.emergency";
 
 
     /**

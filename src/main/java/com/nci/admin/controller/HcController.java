@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @UserLogger
 @Controller
-@RequestMapping("health")
-public final class HealthCheckController {
+@RequestMapping("h")
+public final class HcController {
 
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(HealthCheckController.class);
+        LoggerFactory.getLogger(HcController.class);
 
     /**
      * Constance.

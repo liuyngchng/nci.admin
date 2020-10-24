@@ -17,16 +17,16 @@ import java.util.Map;
 
 @UserLogger
 @Controller
-@RequestMapping("pay")
-public class PayController {
+@RequestMapping("py")
+public class WhyController {
 
     /**
      * Logger.
      */
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(PayController.class);
+        LoggerFactory.getLogger(WhyController.class);
 
-    private static final String EMERGENCY_PERMISSION = "xiaoer.emergency";
+    private static final String EMERGENCY_PERMISSION = "d.emergency";
 
     /**
      * 检索条件公共服务.

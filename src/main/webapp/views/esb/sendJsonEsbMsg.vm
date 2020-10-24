@@ -13,8 +13,8 @@
                 <div class="col-sm-10 backstage-col-sm-10">
                     <select class="form-control m-b backstage-select registerName" name="registerName" id="payChannel">
                         <option value="">--选择ESB注册名称--</option>
-                        <option value="loanIn2risk">小二发risk(loanIn2risk)</option>
-                        <option value="risk2loanIn">risk发送小二(risk2loanIn))</option>
+                        <option value="loanIn2risk">who发risk(loanIn2risk)</option>
+                        <option value="risk2loanIn">risk发送who(risk2loanIn))</option>
                     </select>
                 </div>
             </div>

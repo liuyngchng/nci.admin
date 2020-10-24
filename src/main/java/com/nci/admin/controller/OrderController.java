@@ -3,7 +3,6 @@ package com.nci.admin.controller;
 import com.nci.admin.auth.UserLogger;
 import com.nci.admin.model.ApplySearchDto;
 import com.nci.admin.model.AuditSearchDto;
-import com.nci.admin.service.ImportInfoService;
 import com.nci.admin.service.IndexService;
 import com.nci.admin.model.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 @UserLogger
 @Controller
 @RequestMapping("import")
-public class ImportController {
+public class OrderController {
     /**
      * Constant.
      */
-    private static final String EMERGENCY_PERMISSION = "xiaoer.emergency";
+    private static final String EMERGENCY_PERMISSION = "d.emergency";
 
     /**
      * 检索条件公共服务.
@@ -31,8 +30,6 @@ public class ImportController {
     @Autowired
     private IndexService indexService;
 
-    @Autowired
-    private ImportInfoService importInfoService;
 
     /**
      * order数据静态页.
@@ -57,7 +54,7 @@ public class ImportController {
     @ResponseBody
     public Pagination getImportData(final ApplySearchDto applySearchDto) {
 
-        return this.importInfoService.getLoanInfo(applySearchDto);
+        return new Pagination(1,2,3L);
     }
 
     /**
@@ -82,6 +79,6 @@ public class ImportController {
     @RequestMapping("auditInfo/data")
     @ResponseBody
     public Pagination getAuditInfo(final AuditSearchDto auditSearchDto) {
-        return this.importInfoService.getAuditInfo(auditSearchDto);
+        return new Pagination(1,2,3L);
     }
 }

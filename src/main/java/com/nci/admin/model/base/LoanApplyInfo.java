@@ -115,7 +115,7 @@ public class LoanApplyInfo  {
     private Integer tradeType;
 
     /**
-     * 小二CFCA状态.
+     * whoCFCA状态.
      */
     private Integer cfcaStatus;
 

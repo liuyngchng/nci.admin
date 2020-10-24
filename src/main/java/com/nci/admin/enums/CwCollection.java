@@ -4,50 +4,17 @@
  */
 package com.nci.admin.enums;
 
-import java.util.ListIterator;
-
 /**
  * Getting方式.
  * @author Each Zhang
  * @version $Id$
  * @since 2016.11.16
  */
-public enum ChargingWaysCollection {
+public enum CwCollection {
 
-    /**
-     * 等额本息.
-     */
-    DEBX(1, "等额本息"),
 
-    /**
-     * 先息后本.
-     */
-    XXHB(2, "先息后本"),
-
-    /**
-     * 一次结清.
-     */
-    YCJQ(3, "一次结清"),
-
-    /**
-     * 等本等息.
-     */
-    DBDX(4, "等本等息"),
-
-    /**
-     * 随时结清.
-     */
-    SSJQ(5, "随时结清"),
-
-    /**
-     * 一次付息.
-     */
-    YCFX(6, "一次付息"),
-
-    /**
-     * 先息后本息.
-     */
-    XXHBX(7, "先息后本息");
+    DEBX(1, "debx"),
+;
 
 
     /**
@@ -67,7 +34,7 @@ public enum ChargingWaysCollection {
      * @param cod Getting方式code.
      * @param nam Getting方式name.
      */
-    ChargingWaysCollection(final Integer cod, final String nam) {
+    CwCollection(final Integer cod, final String nam) {
         this.code = cod;
         this.name = nam;
     }

@@ -19,7 +19,7 @@ public enum  AuditStatus {
     HUAN_KUAN_ZHONG(3, "Getting中"),
     SHEN_HE_JU_JUE(4, "审核拒绝"),
     YI_FEI_QI(5, "已废弃"),
-    YI_JIE_QING(6, "已结清"),
+    YI_JIE_QING(6, "clear"),
     YI_SUN_SHI(7, "已损失"),
     BU_CONG_ZI_LIAO(8, "补充what中"),
     SHEN_HE_TONG_GUO(9, "审核通过"),
@@ -28,8 +28,8 @@ public enum  AuditStatus {
     JIN_JIAN_ZHONG(12, "order中"),
     YU_QI(13, "已expired"),
     FANG_KUAN_SHI_BAI(14, "Going失败"),
-    FANG_BIAO_SHI_BAI(15, "放标失败"),
-    FANG_BIAO_ZHONG(16, "fowrard"),
+    FANG_BIAO_SHI_BAI(15, "clear失败"),
+    FANG_BIAO_ZHONG(16, "forward"),
     JIN_JIAN_SHI_BAI(17, "order失败");
 
 

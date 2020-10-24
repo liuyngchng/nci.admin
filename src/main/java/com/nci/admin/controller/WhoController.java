@@ -15,20 +15,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 小二Getting相关信息查询.
+ * whoGetting相关信息查询.
  * @author Wang zhenji (wangzhenji@test.com)
  */
 @UserLogger
 @Controller
-@RequestMapping("repay")
-public class RepayController {
+@RequestMapping("rp")
+public class WhoController {
     /**
      * Constant.
      */
-    private static final String EMERGENCY_PERMISSION = "xiaoer.emergency";
+    private static final String EMERGENCY_PERMISSION = "d.emergency";
 
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(RepayController.class);
+        LoggerFactory.getLogger(WhoController.class);
 
     @Autowired
     private IndexService indexService;

@@ -20,17 +20,17 @@ import java.lang.reflect.Method;
  */
 @UserLogger
 @Controller
-@RequestMapping("xiaoer")
-public final class FoxAdminController {
+@RequestMapping("d")
+public final class AdminController {
 
     /**
      * Logger
      */
     private static final Logger LOG =
-        LoggerFactory.getLogger(FoxAdminController.class);
+        LoggerFactory.getLogger(AdminController.class);
 
     /**
-     * 小二后台主页.
+     * who后台主页.
      * @param request A {@link HttpServletRequest} instance
      * @return A string result
      */
@@ -51,7 +51,7 @@ public final class FoxAdminController {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Class clazz = Class.forName("com.nci.admin.controller.FoxAdminController");
+        Class clazz = Class.forName("com.nci.admin.controller.AdminController");
         Method method = clazz.getMethods()[0];
         System.out.println(method.getClass());
         System.out.println(method.toString());

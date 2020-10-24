@@ -158,7 +158,7 @@
                 formatter: money_formatter
             }, {
                 field: 'auditStatus',
-                title: '小二状态',
+                title: 'who状态',
                 width: "100px",
                 formatter:function(value, row, index) {
                     return getAuditStatus(value);

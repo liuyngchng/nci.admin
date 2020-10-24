@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by liangxu on 1/4/17.
+ * Created by LX on 1/4/17.
  */
 @Service
 public class IndexServiceImpl implements IndexService {

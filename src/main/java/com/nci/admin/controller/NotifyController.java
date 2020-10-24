@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @UserLogger
 @Controller
-@RequestMapping("notify")
+@RequestMapping("t")
 public final class NotifyController {
     /**
      * Logger.

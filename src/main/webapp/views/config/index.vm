@@ -14,14 +14,14 @@
                 <div class="col-sm-10 backstage-col-sm-10" style="width:250px;">
                     <select class="form-control m-b backstage-select" name="configKey" id="configKey">
                         <option value="">--选择配置信息项--</option>
-                        <option value="xhjr:cfca:status">CFCA服务状态</option>
-                        <option value="xhjr:credit:user:limit">create用户数限流</option>
-                        <option value="xhjr:credit:freeze:days">create拒绝冻结天数</option>
-                        <option value="xhjr:withdraw:freeze:days">取现拒绝冻结天数</option>
-                        <option value="xhjr:credit:user:op:message">运营消息</option>
-                        <option value="xhjr:huihua:display:agreement">展示协议弹层</option>
-                        <option value="xhjr:huihua:repay:fee:ratio">flush费率明细</option>
-                        <option value="xhjr:huihua:userstatus:banner">账户状态文案</option>
+                        <option value="xr:cfca:status">CFCA服务状态</option>
+                        <option value="xr:credit:user:limit">create用户数限流</option>
+                        <option value="xr:credit:freeze:days">create拒绝冻结天数</option>
+                        <option value="xr:withdraw:freeze:days">取现拒绝冻结天数</option>
+                        <option value="xr:credit:user:op:message">运营消息</option>
+                        <option value="xr:huihua:display:agreement">展示协议弹层</option>
+                        <option value="xr:huihua:repay:fee:ratio">flush费率明细</option>
+                        <option value="xr:huihua:userstatus:banner">账户状态文案</option>
                     </select>
                 </div>
                 <div class="col-sm-2 backstage-select-label">

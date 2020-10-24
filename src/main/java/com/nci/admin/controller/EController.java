@@ -29,19 +29,19 @@ import java.text.MessageFormat;
  */
 @UserLogger
 @Controller
-@RequestMapping("emergency")
-public final class EmergencyController {
+@RequestMapping("e")
+public final class EController {
 
     /**
      * Logger.
      */
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(EmergencyController.class);
+        LoggerFactory.getLogger(EController.class);
 
     /**
      * Constant.
      */
-    private static final String EMERGENCY_PERMISSION = "xiaoer.emergency";
+    private static final String EMERGENCY_PERMISSION = "d.emergency";
 
     /**
      * 检索条件公共服务.
@@ -150,7 +150,7 @@ public final class EmergencyController {
         return this.indexService.showIndexPage(
             request,
             "emergency/auditStatusIndex",
-            Permission.XHJR_IMPORT_UPDAT.getKey()
+            Permission.xr_IMPORT_UPDAT.getKey()
         );
     }
 
@@ -215,7 +215,7 @@ public final class EmergencyController {
         } else {
             return this.releaseLock(
                 MessageFormat.format(
-                    "xhjr:huihua:user:loan:{0}",
+                    "xr:huihua:user:loan:{0}",
                     redisKey.trim()
                 )
             );

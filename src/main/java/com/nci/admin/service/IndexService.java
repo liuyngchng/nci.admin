@@ -7,7 +7,7 @@ package com.nci.admin.service;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by liangxu on 1/4/17.
+ * Created by LX on 1/4/17.
  */
 public interface IndexService {
 

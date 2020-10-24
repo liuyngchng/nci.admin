@@ -4,7 +4,7 @@ mvn jetty:run
 ```
 # 2. browse web page.
 
-http://localhost:8080/nci.admin/xiaoer/index
+http://localhost:8080/nci.admin/d/index
 
 # 3. package
 ```

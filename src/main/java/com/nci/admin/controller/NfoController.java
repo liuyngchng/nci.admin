@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 @UserLogger
 @Controller
-@RequestMapping("private")
-public class PrivateInfoController {
+@RequestMapping("i")
+public class NfoController {
 
     /**
      * 检索条件公共服务.
@@ -28,7 +28,7 @@ public class PrivateInfoController {
     /**
      * Constant.
      */
-    private static final String EMERGENCY_PERMISSION = "xiaoer.emergency";
+    private static final String EMERGENCY_PERMISSION = "d.emergency";
 
     /**
      * whoAm信息静态页.

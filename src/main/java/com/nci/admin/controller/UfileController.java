@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @UserLogger
 @Controller
-@RequestMapping("ufile")
+@RequestMapping("f")
 public class UfileController {
 
     private static final Logger LOGGER =
@@ -28,7 +28,7 @@ public class UfileController {
     /**
      * Constant.
      */
-    private static final String EMERGENCY_PERMISSION = "xiaoer.emergency";
+    private static final String EMERGENCY_PERMISSION = "d.emergency";
 
 
     @Autowired

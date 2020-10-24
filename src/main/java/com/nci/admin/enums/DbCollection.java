@@ -15,37 +15,7 @@ public enum DbCollection {
     /**
      * order数据库.
      */
-    IMPORT("import"),
-
-    /**
-     * 信用账户.
-     */
-    CA("ca"),
-
-    /**
-     * 新氧.
-     */
-    SY("sy"),
-
-    /**
-     * 畅游.
-     */
-    CY("cy"),
-
-    /**
-     * 新氧独立的数据库，保存新氧原始数据，以及新氧订单跟踪信息
-     */
-    XIN_YANG("xiaoer_xinyang"),
-
-    /**
-     * 信用账户.
-     */
-    CREDIT_ACCOUNT("xiaoer_creditaccount"),
-
-    /**
-     * 跟谁学直连.
-     */
-    PATTON("xiaoer_patton");
+    IMPORT("import");
 
     /**
      * 数据库名称.

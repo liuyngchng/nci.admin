@@ -39,7 +39,7 @@ function getAuditStatus(value) {
     } else if (value == 5) {
         return "已废弃(5)";
     } else if (value == 6) {
-        return "已结清(6)";
+        return "clear(6)";
     } else if (value == 8) {
         return "补充what(8)";
     } else if (value == 11) {
@@ -51,9 +51,9 @@ function getAuditStatus(value) {
     } else if (value == 14) {
         return "Going失败(14)";
     } else if (value == 15) {
-        return "放标失败(15)";
+        return "clear失败(15)";
     } else if (value == 16) {
-        return "fowrard(16)";
+        return "clear(16)";
     } else if (value == 10) {
         return "确认中(10)";
     } else if (value == 9) {

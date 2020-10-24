@@ -15,7 +15,7 @@
             <div class="form-group backstage-form-group">
                 <label class="col-sm-2 control-label backstage-select-label">riskID:</label>
                 <div class="col-sm-10 backstage-col-sm-10">
-                    <input placeholder="请输入小二riskID" class="form-control backstage-input" type="text" id="lid" name="lid">
+                    <input placeholder="请输入whoriskID" class="form-control backstage-input" type="text" id="lid" name="lid">
                 </div>
             </div>
             <div class="hr-line-dashed backstage-hr-line-dashed"></div>
@@ -230,7 +230,7 @@
                     switch(value){
                         case 21: return '正常Getting中(21)';
                         case 22: return '已expired(22)';
-                        case 32: return '已结清(32)';
+                        case 32: return 'clear(32)';
                         default : return value;
                     }
                 }

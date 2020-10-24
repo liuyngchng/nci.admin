@@ -26,13 +26,13 @@
                         <option value="3">Getting中(3)</option>
                         <option value="4">审核拒绝(4)</option>
                         <option value="5">已废弃(5)</option>
-                        <option value="6">已结清(6)</option>
+                        <option value="6">clear(6)</option>
                         <option value="7">已损失(7)</option>
                         <option value="8">补充what中(8)</option>
                         <option value="9">审核通过(9)</option>
                         <option value="10">确认中(10)</option>
                         <option value="13">已expired(13)</option>
-                        <option value="16">fowrard(16)</option>
+                        <option value="16">clear(16)</option>
                         <option value="17">order失败(17)</option>
                     </select>
                 </div>

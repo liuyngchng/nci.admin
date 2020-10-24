@@ -16,22 +16,22 @@ public enum Permission {
     /**
      * 读权限.
      */
-    XHJR_CI_READ("xhjr.ci.read"),
+    xr_CI_READ("xr.ci.read"),
 
     /**
      * 写权限.
      */
-    XHJR_CI_WRITE("xhjr.ci.write"),
+    xr_CI_WRITE("xr.ci.write"),
 
     /**
      * 导出权限.
      */
-    XHJR_CI_DUMP("xhjr.ci.dump"),
+    xr_CI_DUMP("xr.ci.dump"),
 
     /**
      * 更新order数据权限.
      */
-    XHJR_IMPORT_UPDAT("xhjr.import.update");
+    xr_IMPORT_UPDAT("xr.import.update");
 
     /**
      * 权限key的值.
